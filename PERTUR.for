@@ -1,0 +1,44 @@
+c----- perturbation field      
+      SUBROUTINE PERTUR       
+      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      COMMON/S0/R(5,16000),T(5,16000),R1(5,16000),T1(5,16000),DIST,K,L  
+      COMMON VMAX,GAP,SIV,ER0(4),ET0(4),ER1(4),ET1(4),
+     1DERDR(4),DETDT(4),BS0(4),DBSDR(4),DBSDT(4),BBM,DBM,       
+     2RO0,TETA0,RRM,AAM,AMAX,WIDTH,POTINT,POTEX,EN,   
+     3DERDT(4),DETDR(4),EP,ITEST        
+      SINA=DSIN(TETA0-T(K,L))
+      COSA=DCOS(TETA0-T(K,L))
+      SINO=DSIN(AAM-TETA0)
+      COSO=DCOS(AAM-TETA0)
+      AAA=RO0*SINO-R(K,L)*DSIN(AAM-T(K,L))
+      BBB=-RO0*COSO+R(K,L)*DCOS(AAM-T(K,L))
+      ECA=DATAN(AAA/BBB)
+      RRMP2=AAA*AAA+BBB*BBB
+      DDD=DSQRT(RRMP2)
+      DI=DDD-RRM
+      GGG=(2.*ECA+AMAX)*RRM/GAP+1.
+      IF(GGG.GT.80.) GGG=80.
+      IF(GGG.LT.-80.) GGG=-80.
+      HHH=(2.*ECA-AMAX)*RRM/GAP-1.
+      IF(HHH.GT.80.) HHH=80.
+      IF(HHH.LT.-80.) HHH=-80.
+      FFF=(DTANH(GGG)-DTANH(HHH))*.5
+      DX=WIDTH*.5-DI
+      FF=.66*GAP*GAP/DX/DX
+      BS0(K)=BBM*FF*FFF
+      DECADR=RO0*SINA/RRMP2
+      DECADT=R(K,L)*(R(K,L)-RO0*COSA)/RRMP2
+      U1=DCOSH(GGG) 
+      U2=DCOSH(HHH)
+      UU=RRM*(1./U1/U1-1./U2/U2)/GAP    
+      DFFFDR=DECADR*UU        
+      DFFFDT=DECADT*UU        
+      DIDR=(R(K,L)-RO0*COSA)/DDD        
+      DIDT=-R(K,L)*RO0*SINA/DDD         
+      U=1.32*GAP*GAP/DX       
+      DFFDR=DIDR*U  
+      DFFDT=DIDT*U  
+      DBSDR(K)=BBM*(FF*DFFFDR+FFF*DFFDR)
+      DBSDT(K)=BBM*(FF*DFFFDT+FFF*DFFDT)
+      RETURN        
+      END 

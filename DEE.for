@@ -1,0 +1,47 @@
+      SUBROUTINE DEE
+      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      COMMON/S0/R(5,16000),T(5,16000),R1(5,16000),T1(5,16000),DIST,K,L  
+      COMMON/S1/TOUV,PHI(5,16000),PHI0(16000),CHF,PHIH,CHARM,  
+     1DER0(4),DET0(4),DRDR(4),DRDT(4),DTDR(4),DTDT(4),DER1(4),DET1(4),    
+     2DGAP,DWIDTH,IHARM       
+      COMMON/S1A/OME
+      COMMON VMAX,GAP,SIV,ER0(4),ET0(4),ER1(4),ET1(4),
+     1DERDR(4),DETDT(4),BS0(4),DBSDR(4),DBSDT(4),BBM,DBM,       
+     2RO0,TETA0,RRM,AAM,AMAX,WIDTH,POTINT,POTEX,EN,   
+     3DERDT(4),DETDR(4),EP,ITEST        
+      CCC=CHF       
+      IF(IHARM.NE.1) CCC=CHARM
+      EMAX=CCC*VMAX/(DGAP+DWIDTH) 
+      RIHARM=DBLE(FLOAT(IHARM))         
+      FI=PHI(K,L)   
+      IF(IHARM.NE.1) FI=PHIH+(PHI(K,L)-PHI0(L))*RIHARM      
+      SINI=DSIN(FI) 
+      COSI=DCOS(FI) 
+      ECA=T(K,L)-TOUV         
+      SINECA=DSIN(ECA)        
+      COSECA=DCOS(ECA)        
+      X=2.*R(K,L)*SINECA/DGAP     
+      A=1.+DWIDTH/DGAP 
+      GGG=X+A       
+      HHH=X-A       
+      IF(GGG.GT.20.) GGG=20.  
+      IF(HHH.GT.20.) HHH=20.  
+      IF(GGG.LT.-20.) GGG=-20.
+      IF(HHH.LT.-20.) HHH=-20.
+      U1=DEXP(GGG)  
+      U2=DEXP(-GGG) 
+      V1=DEXP(HHH)  
+      V2=DEXP(-HHH) 
+      FFF=((U1-U2)/(U1+U2)-(V1-V2)/(V1+V2))/2.    
+      XXX=4.*(1./(U1+U2)/(U1+U2)-1./(V1+V2)/(V1+V2))        
+      DER0(K)=SINECA*EMAX*SINI*FFF         
+      DET0(K)=COSECA*EMAX*SINI*FFF
+      DRDR(K)=EMAX*SINI*SINECA*SINECA*XXX/DGAP        
+      DRDT(K)=EMAX*SINI*(COSECA*FFF+R(K,L)*COSECA*SINECA*XXX/DGAP)        
+      DTDR(K)=EMAX*SINI*COSECA*SINECA*XXX/DGAP        
+      DTDT(K)=EMAX*SINI*(-SINECA*FFF+R(K,L)*COSECA*COSECA*XXX/DGAP)       
+      DDD=RIHARM*OME*COSI*EMAX*FFF      
+      DER1(K)=DRDR(K)*R1(K,L)+DRDT(K)*T1(K,L)+SINECA*DDD        
+      DET1(K)=DTDR(K)*R1(K,L)+DTDT(K)*T1(K,L)+COSECA*DDD        
+      RETURN        
+      END 

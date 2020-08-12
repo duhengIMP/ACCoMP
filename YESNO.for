@@ -1,0 +1,12 @@
+      SUBROUTINE YESNO(K)
+      BYTE YN
+      K=3
+6789  READ(5678) YN
+5678  FORMAT(A1)
+      IF(YN.EQ.'Y') K=1
+      IF(YN.EQ.'N') K=2
+      IF(K.EQ.1.OR.K.EQ.2) RETURN
+      WRITE(4567)
+4567  FORMAT(/T10,'PLEASE GIVE OUT "Y" OR "N" ONLY!'/)
+      GO TO 6789
+      END  
